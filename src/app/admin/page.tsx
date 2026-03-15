@@ -23,9 +23,9 @@ export default async function AdminPage() {
   // Seed courses if they don't exist
   await seedCourses();
 
-  const users = await userDb.getAll.all();
-  const courses = await courseDb.findAll.all();
-  const stats = await progressDb.getStats.get();
+  const users = await userDb.getAll();
+  const courses = await courseDb.findAll();
+  const stats = await progressDb.getStats();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">

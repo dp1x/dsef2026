@@ -1,58 +1,150 @@
 import Link from "next/link";
-import { GraduationCap, BookOpen, ArrowRight } from "lucide-react";
+import { Navigation, Footer } from "@/components/layout";
 import { courseDb, seedCourses } from "@/lib/db";
+import { Button } from "@/components/ui";
+import { ArrowRight, Clock, BookOpen, ChevronRight, Zap } from "lucide-react";
+
+export const metadata = {
+  title: "Courses - UpSkill",
+  description: "Browse our collection of soft skills courses designed to help you advance your career",
+};
 
 export default async function CoursesPage() {
-  // Seed courses if they don't exist
   await seedCourses();
-  
-  const courses = await courseDb.findAll.all();
+  const courses = await courseDb.findAll();
+
+  const courseColors: Record<string, { bg: string; border: string; icon: string; gradient: string }> = {
+    "Communication Basics": { bg: "bg-blue-50", border: "border-blue-200", icon: "💬", gradient: "from-blue-500 to-blue-600" },
+    "Interview Skills": { bg: "bg-green-50", border: "border-green-200", icon: "🎯", gradient: "from-green-500 to-green-600" },
+    "Workplace Etiquette": { bg: "bg-purple-50", border: "border-purple-200", icon: "🏢", gradient: "from-purple-500 to-purple-600" },
+    "Time Management": { bg: "bg-amber-50", border: "border-amber-200", icon: "⏰", gradient: "from-amber-500 to-amber-600" },
+    "Leadership Basics": { bg: "bg-rose-50", border: "border-rose-200", icon: "👔", gradient: "from-rose-500 to-rose-600" },
+  };
+
+  // Estimate lessons based on content length (rough calculation)
+  const getLessonCount = (content: string) => {
+    const sections = content.split(/^## /m).filter(Boolean);
+    return Math.max(3, sections.length);
+  };
+
+  // Estimate duration based on content length
+  const getDuration = (content: string) => {
+    const words = content.split(/\s+/).length;
+    const minutes = Math.ceil(words / 200); // ~200 words per minute reading
+    return `${Math.max(15, minutes)} min`;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
-      <nav className="border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <GraduationCap className="w-8 h-8 text-blue-400" />
-            <span className="text-xl font-bold text-white">UpSkill</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/courses" className="text-blue-400 font-medium">Courses</Link>
-            <Link href="/about" className="text-slate-300 hover:text-white">About</Link>
-            <Link href="/login" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-              Sign In
+    <div className="min-h-screen bg-white">
+      <Navigation />
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-primary-50/20 py-12 md:py-16">
+        {/* Decorative orbs */}
+        <div className="absolute top-0 right-0 w-64 h-64 gradient-orb gradient-orb-primary opacity-30" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 gradient-orb gradient-orb-amber opacity-20" />
+        
+        <div className="max-w-6xl mx-auto px-4 md:px-6 relative">
+          <div className="text-center max-w-2xl mx-auto">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-4 animate-fade-in-up">
+              Your Learning Path
+            </h1>
+            <p className="text-lg text-slate-600 mb-6 animate-fade-in-up animate-stagger-1">
+              Complete courses in order to build essential soft skills for career success.
+            </p>
+            <p className="text-slate-500 animate-fade-in-up animate-stagger-2">
+              {courses.length} courses available
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Courses Grid - Bento Style */}
+      <section className="py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {courses.map((course: any, index: number) => {
+              const colorScheme = courseColors[course.title] || {
+                bg: "bg-slate-50",
+                border: "border-slate-200",
+                icon: "📚",
+                gradient: "from-slate-500 to-slate-600"
+              };
+              const lessonCount = getLessonCount(course.content || "");
+              const duration = getDuration(course.content || "");
+
+              return (
+                <Link
+                  key={course.id}
+                  href={`/courses/${course.id}`}
+                  className="block group animate-fade-in-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className={`
+                    ${colorScheme.bg} border ${colorScheme.border} rounded-2xl p-6
+                    hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300
+                    h-full flex flex-col
+                  `}>
+                    {/* Card Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorScheme.gradient} flex items-center justify-center text-2xl shadow-lg`}>
+                        {colorScheme.icon}
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-400 group-hover:text-primary-500 group-hover:bg-primary-50 transition-all duration-300 transform group-hover:scale-110">
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <span className="inline-block px-2 py-1 bg-white rounded-full text-xs font-medium text-slate-600 mb-3">
+                        {course.category || "General"}
+                      </span>
+                      <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary-600 transition-colors">
+                        {course.title}
+                      </h3>
+                      <p className="text-slate-600 text-sm line-clamp-2">
+                        {course.description}
+                      </p>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-200/50">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <BookOpen className="w-4 h-4" />
+                        {lessonCount} lessons
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <Clock className="w-4 h-4" />
+                        {duration}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-primary-600 ml-auto">
+                        <Zap className="w-4 h-4" />
+                        Start
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-16 text-center">
+            <p className="text-slate-600 mb-4">
+              Create an account to track your progress
+            </p>
+            <Link href="/register">
+              <Button variant="primary" size="lg">
+                Create Account
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </Link>
           </div>
         </div>
-      </nav>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">Explore Our Courses</h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Master essential soft skills with our AI-powered learning platform.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {courses.map((course: any) => (
-            <Link
-              key={course.id}
-              href={`/courses/${course.id}`}
-              className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-all"
-            >
-              <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm rounded-full">
-                {course.category || "General"}
-              </span>
-              <h3 className="text-xl font-semibold text-white mt-3 mb-2">{course.title}</h3>
-              <p className="text-slate-400 mb-4">{course.description}</p>
-              <div className="flex items-center text-blue-400 font-medium">
-                Start Learning <ArrowRight className="w-5 h-5 ml-2" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }

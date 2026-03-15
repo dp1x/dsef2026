@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { courseDb, progressDb, seedCourses } from "@/lib/db";
 import Link from "next/link";
-import { GraduationCap, BookOpen, Trophy, Clock } from "lucide-react";
+import { Navigation, Footer } from "@/components/layout";
+import { Button, Card, ProgressBar } from "@/components/ui";
+import { GraduationCap, ArrowRight, BookOpen, CheckCircle, Clock, TrendingUp } from "lucide-react";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -15,110 +17,115 @@ export default async function Dashboard() {
   const user = session.user;
   const userId = (user as any).id;
 
-  // Seed courses if they don't exist
   await seedCourses();
 
-  // Fetch courses and user progress
-  const courses = await courseDb.findAll.all();
-  const progress = await progressDb.findByUser.all(userId);
+  const courses = await courseDb.findAll();
+  const progress = await progressDb.findByUser(userId);
 
-  // Calculate stats
   const completedCount = progress.filter((p: any) => p.completed).length;
+  const inProgressCount = progress.filter((p: any) => p.progress_percent > 0 && !p.completed).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
-      {/* Navbar */}
-      <nav className="border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <GraduationCap className="w-8 h-8 text-blue-400" />
-            <span className="text-xl font-bold text-white">UpSkill</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-slate-300">{user?.name || user?.email}</span>
-            <Link
-              href="/api/auth/signout"
-              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
-            >
-              Sign Out
+    <div className="min-h-screen bg-slate-50">
+      <Navigation />
+
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
+        {/* Welcome Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+            Welcome back, {user?.name || "Learner"}!
+          </h1>
+          <p className="text-slate-600">
+            Continue your learning journey
+          </p>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <Card className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-primary-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900">{courses.length}</p>
+              <p className="text-sm text-slate-500">Total Courses</p>
+            </div>
+          </Card>
+          
+          <Card className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900">{completedCount}</p>
+              <p className="text-sm text-slate-500">Completed</p>
+            </div>
+          </Card>
+          
+          <Card className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900">{inProgressCount}</p>
+              <p className="text-sm text-slate-500">In Progress</p>
+            </div>
+          </Card>
+        </div>
+
+        {/* Courses Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-slate-900">Your Courses</h2>
+            <Link href="/courses" className="text-primary-600 font-medium hover:text-primary-700 transition-colors">
+              View All
             </Link>
           </div>
-        </div>
-      </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
-          Welcome back, {user?.name || "Learner"}!
-        </h1>
-        <p className="text-slate-400 mb-8">
-          Continue your learning journey
-        </p>
+          <div className="grid gap-4">
+            {courses.map((course: any) => {
+              const userProgress = progress.find((p: any) => p.course_id === course.id);
+              const progressPercent = userProgress?.progress_percent || 0;
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-slate-400 text-sm">Courses</p>
-                <p className="text-2xl font-bold text-white">{courses.length}</p>
-              </div>
-            </div>
+              return (
+                <Link key={course.id} href={`/courses/${course.id}`} className="block group">
+                  <Card className="hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-2xl">
+                          📚
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-slate-900 truncate">
+                            {course.title}
+                          </h3>
+                          <p className="text-sm text-slate-500 truncate">
+                            {course.description}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 ml-4">
+                        <div className="w-32">
+                          <ProgressBar value={progressPercent} size="sm" />
+                          <p className="text-xs text-slate-400 text-right mt-1">
+                            {progressPercent}% complete
+                          </p>
+                        </div>
+                        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-primary-500 group-hover:bg-primary-50 transition-colors">
+                          <ArrowRight className="w-5 h-5" />
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-green-400" />
-              </div>
-              <div>
-                <p className="text-slate-400 text-sm">Completed</p>
-                <p className="text-2xl font-bold text-white">{completedCount}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-slate-400 text-sm">In Progress</p>
-                <p className="text-2xl font-bold text-white">{progress.length}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Courses */}
-        <h2 className="text-xl font-semibold text-white mb-4">Your Courses</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {courses.map((course: any) => {
-            const userProgress = progress.find((p: any) => p.course_id === course.id);
-            const progressPercent = userProgress?.progress_percent || 0;
-            
-            return (
-              <Link
-                key={course.id}
-                href={`/courses/${course.id}`}
-                className="bg-slate-800 border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-colors"
-              >
-                <div className="text-sm text-blue-400 mb-2">{course.category}</div>
-                <h3 className="text-lg font-semibold text-white mb-2">{course.title}</h3>
-                <p className="text-slate-400 text-sm mb-4">{course.description}</p>
-                <div className="w-full bg-slate-700 rounded-full h-2">
-                  <div
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </div>
-                <p className="text-slate-400 text-sm mt-2">{progressPercent}% complete</p>
-              </Link>
-            );
-          })}
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     }
 
     const userId = (session.user as any).id;
-    const progress = await progressDb.findByUser.all(userId);
+    const progress = await progressDb.findByUser(userId);
 
     return NextResponse.json(progress);
   } catch (error) {

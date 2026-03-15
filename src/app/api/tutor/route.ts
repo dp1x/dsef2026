@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     // Get course context if provided
     let courseContext = "";
     if (courseId) {
-      const course = await courseDb.findById.get(courseId);
+      const course = await courseDb.findById(courseId);
       if (course) {
         courseContext = `\n\nThe user is currently learning about: ${course.title}\nCourse content:\n${course.description}\n\n`;
       }

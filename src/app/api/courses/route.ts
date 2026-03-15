@@ -8,13 +8,13 @@ export async function GET(request: Request) {
     // Seed courses if they don't exist
     await seedCourses();
 
-    const courses = await courseDb.findAll.all();
+    const courses = await courseDb.findAll();
     const session = await getServerSession(authOptions);
 
     let progress: any[] = [];
     if (session?.user) {
       const userId = (session.user as any).id;
-      progress = await progressDb.findByUser.all(userId);
+      progress = await progressDb.findByUser(userId);
     }
 
     const coursesWithProgress = courses.map((course: any) => {

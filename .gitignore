@@ -63,6 +63,10 @@ next-env.d.ts
 # AI Chat logs
 CLAUDE CHAT*.md
 
+# Design & Planning Documents
+AUDIT_REPORT.md
+DUOLINGO_STYLE_REDESIGN.md
+
 # IDE and tool configurations
 .kilocode/
 .idea/
@@ -83,3 +87,8 @@ logs/
 
 # OS files
 Thumbs.db
+
+# ============================================
+# CHECKPOINT FILES
+# ============================================
+checkpoint.md

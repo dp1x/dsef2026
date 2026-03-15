@@ -12,7 +12,11 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials not configured. Some features may not work.');
+  console.error('==========================================');
+  console.error('CRITICAL: Supabase credentials not configured!');
+  console.error('Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  console.error('in your .env.local file');
+  console.error('==========================================');
 }
 
 // Create Supabase client
@@ -176,7 +180,7 @@ export const userDb = {
   create: db.users.create,
   findByEmail: { get: db.users.findByEmail },
   findById: { get: db.users.findById },
-  getAll: { all: db.users.getAll },
+  getAll: db.users.getAll,
 };
 
 export const courseDb = {

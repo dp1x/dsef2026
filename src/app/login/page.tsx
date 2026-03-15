@@ -4,7 +4,8 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Mail, Lock, ArrowRight } from "lucide-react";
+import { Button, Input, Card } from "@/components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,71 +40,91 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <GraduationCap className="w-10 h-10 text-blue-400" />
-            <span className="text-2xl font-bold text-white">UpSkill</span>
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-primary-50/20 flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-sm">
+          {/* Logo */}
+          <div className="mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-button group-hover:shadow-button-hover transition-shadow">
+                <GraduationCap className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-slate-900">UpSkill</span>
+            </Link>
+          </div>
 
-        <div className="bg-slate-800 border border-slate-700 rounded-xl p-8">
-          <h1 className="text-2xl font-bold text-white mb-6 text-center">
-            Welcome Back
-          </h1>
-
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-4">
-              {error}
+          <Card className="p-6">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">
+                Welcome back
+              </h1>
+              <p className="text-slate-500">
+                Sign in to continue your learning
+              </p>
             </div>
-          )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
+            {error && (
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl mb-4 text-sm">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
                 type="email"
+                label="Email"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="you@example.com"
+                leftIcon={<Mail className="w-5 h-5" />}
                 required
               />
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
+              <Input
                 type="password"
+                label="Password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="••••••••"
+                leftIcon={<Lock className="w-5 h-5" />}
                 required
               />
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full"
+                isLoading={loading}
+              >
+                Sign In
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-slate-500">
+                Don't have an account?{" "}
+                <Link href="/register" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                  Sign up
+                </Link>
+              </p>
             </div>
+          </Card>
+        </div>
+      </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-
-          <p className="text-center text-slate-400 mt-6">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-blue-400 hover:underline">
-              Sign up
-            </Link>
+      {/* Right Side - Visual */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary-500 to-primary-600 items-center justify-center p-12">
+        <div className="text-center text-white max-w-md">
+          <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <GraduationCap className="w-10 h-10" />
+          </div>
+          <h2 className="text-3xl font-bold mb-4">
+            Continue Your Journey
+          </h2>
+          <p className="text-primary-100 text-lg">
+            Sign in to access your courses, track your progress, and continue building essential soft skills.
           </p>
         </div>
       </div>

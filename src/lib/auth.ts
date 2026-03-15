@@ -54,10 +54,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await userDb.findByEmail.get(result.data.email);
-        if (!user) {
+        if (!user || !user.password_hash) {
           return null;
         }
-
+      
         const isValid = await bcrypt.compare(result.data.password, user.password_hash);
         if (!isValid) {
           return null;
