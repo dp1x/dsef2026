@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Navigation, Footer } from "@/components/layout";
 import { Button, Mascot } from "@/components/ui";
+import { HeroMascot } from "@/components/sections/HeroMascot";
 import { courseDb, seedCourses } from "@/lib/db";
 import {
   ArrowRight,
@@ -97,59 +98,8 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Right - Progress Preview Card */}
-            <div className="relative hidden lg:block">
-              <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 max-w-sm mx-auto">
-                {/* Mascot header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <Mascot size="xl" mood="waving" showBackground={true} />
-                  <div>
-                    <h3 className="font-display font-bold text-slate-900 text-lg">Your Learning Path</h3>
-                    <p className="text-slate-500 text-sm">Start here, grow everywhere</p>
-                  </div>
-                </div>
-
-                {/* Progress example */}
-                <div className="space-y-4">
-                  <div className="bg-slate-50 rounded-xl p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-slate-700">Communication</span>
-                      <span className="text-primary-600 font-bold text-sm">75%</span>
-                    </div>
-                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary-500 rounded-full w-3/4" />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 bg-primary-50 rounded-xl p-4 border border-primary-200">
-                    <div className="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      5
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900">Day Streak</p>
-                      <p className="text-xs text-slate-500">Keep it going!</p>
-                    </div>
-                    <div className="ml-auto text-2xl">🔥</div>
-                  </div>
-                </div>
-
-                {/* Quick stats */}
-                <div className="flex justify-between mt-6 pt-4 border-t border-slate-100 text-center">
-                  <div>
-                    <p className="text-2xl font-display font-bold text-primary-600">5</p>
-                    <p className="text-xs text-slate-500">Skills</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-display font-bold text-primary-600">24/7</p>
-                    <p className="text-xs text-slate-500">AI Tutor</p>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-display font-bold text-primary-600">Free</p>
-                    <p className="text-xs text-slate-500">Forever</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+{/* Right - Animated Mascot with Speech Bubble */}
+          <HeroMascot />
           </div>
         </div>
       </section>

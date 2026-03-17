@@ -16,3 +16,6 @@ export type { BadgeProps } from "./Badge";
 
 export { Mascot, MascotInline } from "./Mascot";
 export type { MascotMood } from "./Mascot";
+
+export { SpeechBubble } from "./SpeechBubble";
+export type { SpeechBubbleProps } from "./SpeechBubble";

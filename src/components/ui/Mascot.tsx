@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export type MascotMood = "idle" | "excited" | "thinking" | "celebrating" | "waving";
 
 interface MascotProps {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
   mood?: MascotMood;
   className?: string;
   showBackground?: boolean;
@@ -16,6 +16,7 @@ const sizeStyles = {
   md: "w-12 h-12",
   lg: "w-16 h-16",
   xl: "w-24 h-24",
+  "2xl": "w-40 h-40",
 };
 
 const eyeStyles: Record<MascotMood, React.ReactNode> = {
